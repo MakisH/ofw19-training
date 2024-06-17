@@ -1,12 +1,12 @@
-# My 18th OpenFOAM Workshop training slides
+# OpenFOAM Workshop 2024 preCICE training slides
 
 - Title: Getting started with OpenFOAM-preCICE for FSI simulations
-- Speaker: Gerasimos Chourdakis, Technical University of Munich
-- Authors: Gerasimos Chourdakis, Benjamin Uekermann, + [more](https://www.precice.org/about/)
-- Event: 18th [OpenFOAM Workshop](https://openfoamworkshop.org/), Genoa, Italy
-- Date: July 11, 2023
+- Speaker: Jun Chen, University of Stuttgart
+- Authors: Jun Chen, Gerasimos Chourdakis + [more](https://www.precice.org/about/)
+- Event: 19th [OpenFOAM Workshop](https://openfoamworkshop.org/), Beijing, China
+- Date: June 26, 2024
 
-[Start the presentation](https://makish.github.io/ofw18-training/) - [Get the PDF](https://github.com/MakisH/ofw18-training/blob/master/pdf-export/slides.pdf)
+[Start the presentation](https://makish.github.io/ofw19-training/) - [Get the PDF](https://github.com/MakisH/ofw18-training/blob/master/pdf-export/slides.pdf) (pending)
 
 ## Build
 
