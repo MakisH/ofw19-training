@@ -33,4 +33,4 @@ docker run --rm -t --net=host -v "$(pwd)":/slides astefanutti/decktape generic -
 
 - License: [CreativeCommons Attribution 4.0](https://creativecommons.org/licenses/by/4.0/)
 - Based on [reveal.js](https://github.com/hakimel/reveal.js). Template based on the "White" template by Hakim El Hattab.
-- The TUM logo is part of the corporate identity of the Technical University of Munich.
+- The University of Stuttgart logo is part of the corporate identity of the University of Stuttgart.
