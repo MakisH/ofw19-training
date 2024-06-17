@@ -8,6 +8,8 @@
 
 [Start the presentation](https://makish.github.io/ofw19-training/) - [Get the PDF](https://github.com/MakisH/ofw18-training/blob/master/pdf-export/slides.pdf) (pending)
 
+This training session is an excerpt of the content typically discussed in the [preCICE Workshops](https://precice.org/community.html). Do you want more training for you, your university, or your company? Consider [supporting preCICE](https://precice.org/community-support-precice).
+
 ## Build
 
 Follow the instructions on [reveal.js](https://revealjs.com/installation/), or just install Node.js 10.0.0 or later and do:
