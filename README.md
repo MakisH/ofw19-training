@@ -31,6 +31,7 @@ docker run --rm -t --net=host -v "$(pwd)":/slides astefanutti/decktape generic -
 
 ## License & more
 
+- Based on the material of a related training session at the [OpenFOAM Workshop 2023](https://github.com/MakisH/ofw18-training)
 - License: [CreativeCommons Attribution 4.0](https://creativecommons.org/licenses/by/4.0/)
 - Based on [reveal.js](https://github.com/hakimel/reveal.js). Template based on the "White" template by Hakim El Hattab.
 - The University of Stuttgart logo is part of the corporate identity of the University of Stuttgart.
