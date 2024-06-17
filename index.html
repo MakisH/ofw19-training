@@ -1,0 +1,1173 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+        <title>Getting started with OpenFOAM-preCICE for fluid-structure interaction simulations</title>
+
+        <link rel="stylesheet" href="dist/reset.css">
+        <link rel="stylesheet" href="dist/reveal.css">
+        <link rel="stylesheet" href="dist/theme/precice.css" id="theme">
+
+        <!-- Theme used for syntax highlighted code -->
+        <link rel="stylesheet" href="plugin/highlight/atom-one-light.css" id="highlight-theme">
+
+        <style>
+        .container{
+            display: flex;
+        }
+        .col{
+            flex: 1;
+        }
+        </style>
+
+        <!-- FontAwesome -->
+        <link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+        <style> .reveal i.fa { font-family:FontAwesome; font-style: normal; } </style>
+    </head>
+    <body>
+        <div class="reveal">
+            <div class="slides">
+        
+                <!-- Title slide -->
+                <section>
+                    <small>19th OpenFOAM Workshop - Peking, June 25-28, 2024</small>
+                    <h1>Getting started with<br/>OpenFOAM-preCICE<br/> for FSI simulations</h1>
+                    <div style="margin-top:50pt">
+                        <div>
+                            <small>Jun Chen, University of Stuttgart<br/><a href="mailto:jun.chen@ipvs.uni-stuttgart.de">jun.chen@ipvs.uni-stuttgart.de</a></small><br/>
+                            <img data-src="images/logos/universitaet-stuttgart.png" style="border:none; box-shadow:none; height:100px;">
+                        </div>
+                    </div>
+                </section>
+                
+                <section data-markdown="sections/intro.md" data-separator-vertical="vvv"></section>
+                
+                <!-- Level 1: General -->
+                <section data-markdown data-separator-vertical="vvv">
+                    <textarea data-template>
+                        # Using the preCICE library
+
+                        Coupling two toy Python solvers
+
+                        vvv
+
+                        ## Dependencies
+
+                        - [preCICE](https://precice.org/installation-overview.html) v3 (e.g. [packages for Ubuntu](https://github.com/precice/precice/releases))
+                        - Python 3
+                        - Python packages `numpy`, `matplotlib`
+                        - [preCICE Python bindings](https://precice.org/installation-bindings-python.html):
+                           ```bash
+                           pip3 install --upgrade pip
+                           pip3 install --user pyprecice
+                           ```
+                        
+                        ---
+
+                        ## "Generator" and "Propagator"
+
+                        <div class="container" style="margin-top:50pt">
+
+                        <div class="col">
+
+                        - `generator.py`: generates random data in a 1D domain
+                        - `propagator.py`: propagates boundary data over a 2D domain
+                        </div>
+
+                        <div class="col">
+                        <img data-src="images/level1/propagator_description.png" style="border:none; box-shadow:none; max-width:100%;">
+                        </div>
+
+                        </div>
+
+                        ---
+
+                        ## Unidirectional coupling
+
+                        <img data-src="images/level1/serial-explicit.svg" style="border:none; box-shadow:none; max-width:80%;">
+                        
+                        ---
+
+                        ## generator.py
+
+                        ```python
+                        import numpy
+                        
+                        # generate mesh
+                        n = 20
+                        y = numpy.linspace(0, 1, n + 1)
+
+                        dt = 0.01
+                        t = 0
+
+                        while True:
+                          print("Generating data")
+                          u = 1 - 2 * numpy.random.rand(n)
+                          
+                          t = t + dt 
+                          if(t > 0.1):
+                            break
+                        ```
+
+                        vvv
+
+                        ## propagator.py
+
+                        ```python
+                        # generate mesh
+                        n = 20
+                        x = numpy.linspace(0, 1, n+1)
+                        y = numpy.linspace(0, 1, n+1)
+
+                        # initial data, associated to cell centers
+                        u = numpy.zeros([n, n])
+
+                        dt = 0.01
+                        t = 0
+
+                        # boundary condition for u (arbitrary)
+                        u[:,-1] = y[:-1] 
+
+                        while True:
+                          
+                          print("Propagating data")
+                          # some (arbitrary) convection-diffusion rule
+                          # top row
+                          u[0, :-1] = 0.3 * u[0, :-1] + 0.6 * u[0, 1:] + 0.1 * u[1, :-1] 
+                          # inner domain
+                          u[1:-1, :-1] = 0.2 * u[1:-1, :-1] + 0.6 * u[1:-1, 1:] + 0.1 * u[2:, :-1] + 0.1 * u[:-2, :-1]
+                          # bottom row
+                          u[-1, :-1] = 0.3 * u[-1, :-1] + 0.6 * u[-1, 1:] + 0.1 * u[-1, :-1]
+
+                          t = t + dt 
+                          if(t > 0.2):
+                            break
+                        ```
+                    </textarea>
+                </section>
+                
+                <section>
+                    <section>
+                        <p><a href="https://github.com/MakisH/ofw18-training/blob/master/videos/generator-propagator-uncoupled.mp4"><video data-autoplay src="videos/generator-propagator-uncoupled.mp4"></video></a></p>
+                    </section>
+                    <section>
+                        <h2>Uncoupled simulation</h2>
+                        <p><a href="https://github.com/MakisH/ofw18-training/blob/master/videos/propagator_constant.webm"><video data-autoplay src="videos/propagator_constant.webm"></video></a></p>
+                    </section>
+                </section>
+                
+                <!--- Level 1: Code step-by-step -->
+                <!-- Base -->
+                <section>
+                <section data-auto-animate>
+                    <h2>Import preCICE</h2>
+                    <pre data-id="code-animation"><code class="language-python" data-trim data-line-numbers>
+                        import numpy
+                        
+                        
+                        # generate mesh
+                        n = 20
+                        y = numpy.linspace(0, 1, n + 1)
+
+                        dt = 0.01
+                        t = 0
+
+                        while True:
+                          print("Generating data")
+                          u = 1 - 2 * numpy.random.rand(n)
+                          
+                          t = t + dt 
+                          if(t > 0.1):
+                            break
+                    </code></pre>
+                </section>
+                <!-- Import preCICE -->
+                <section data-auto-animate>
+                    <h2>Import preCICE</h2>
+                    <pre data-id="code-animation"><code class="language-python" data-trim data-line-numbers="2">
+                        import numpy
+                        import precice
+                        
+                        # generate mesh
+                        n = 20
+                        y = numpy.linspace(0, 1, n + 1)
+
+                        dt = 0.01
+                        t = 0
+
+                        while True:
+                          print("Generating data")
+                          u = 1 - 2 * numpy.random.rand(n)
+                          
+                          t = t + dt 
+                          if(t > 0.1):
+                            break
+                    </code></pre>
+                </section>
+                <!-- Configure preCICE -->
+                <section data-auto-animate>
+                    <h2>Configure preCICE</h2>
+                    <pre data-id="code-animation"><code class="language-python" data-trim data-line-numbers="2|8-19">
+                        import numpy
+                        import precice
+                        
+                        # generate mesh
+                        n = 20
+                        y = numpy.linspace(0, 1, n + 1)
+
+                        # preCICE setup
+                        participant_name     = "Generator"
+                        config_file_name     = "../precice-config.xml"
+                        solver_process_index = 0
+                        solver_process_size  = 1
+                        participant = 
+                            precice.Participant(  
+                                               participant_name,
+                                               config_file_name,
+                                               solver_process_index,
+                                               solver_process_size
+                                             )
+
+                        dt = 0.01
+                        t = 0
+
+                        while True:
+                          print("Generating data")
+                          u = 1 - 2 * numpy.random.rand(n)
+                          
+                          t = t + dt 
+                          if(t > 0.1):
+                            break
+                    </code></pre>
+                </section>
+                <!-- Define the coupling mesh -->
+                <section data-auto-animate>
+                    <h2>Define the coupling mesh</h2>
+                    <pre data-id="code-animation"><code class="language-python" data-trim data-line-numbers="8-19|21-27">
+                        import numpy
+                        import precice
+                        
+                        # generate mesh
+                        n = 20
+                        y = numpy.linspace(0, 1, n + 1)
+
+                        # preCICE setup
+                        participant_name     = "Generator"
+                        config_file_name     = "../precice-config.xml"
+                        solver_process_index = 0
+                        solver_process_size  = 1
+                        participant =
+                            precice.Participant(
+                                               participant_name,
+                                               config_file_name,
+                                               solver_process_index,
+                                               solver_process_size
+                                             )
+                        
+                        # Define the coupling mesh name
+                        mesh_name  = "Generator-Mesh"
+                        
+                        # Define the coupling mesh
+                        vertices   = [[1, y0] for y0 in y[:-1]]
+                        vertex_ids = participant.set_mesh_vertices(mesh_name, positions)
+                        
+                        dt = 0.01
+                        t = 0
+
+                        while True:
+                          print("Generating data")
+                          u = 1 - 2 * numpy.random.rand(n)
+                          
+                          t = t + dt 
+                          if(t > 0.1):
+                            break
+                    </code></pre>
+                </section>
+                <!-- Initialize and finalize preCICE -->
+                <section data-auto-animate>
+                    <h2>Initialize and finalize preCICE</h2>
+                    <pre data-id="code-animation"><code class="language-python" data-trim data-line-numbers="21-27|29,42">
+                        import numpy
+                        import precice
+                        
+                        # generate mesh
+                        n = 20
+                        y = numpy.linspace(0, 1, n + 1)
+
+                        # preCICE setup
+                        participant_name     = "Generator"
+                        config_file_name     = "../precice-config.xml"
+                        solver_process_index = 0
+                        solver_process_size  = 1
+                        participant = 
+                            precice.Participant(  
+                                               participant_name,
+                                               config_file_name,
+                                               solver_process_index,
+                                               solver_process_size
+                                             )
+                        
+                        # Define the coupling mesh name
+                        mesh_name = "Generator-Mesh"
+                        
+                        # Define the coupling mesh
+                        vertices = [[1, y0] for y0 in y[:-1]]
+                        vertex_ids = participant.set_mesh_vertices(mesh_name, vertices)
+                        
+                        participant.initialize()
+
+                        dt = 0.01
+                        t = 0
+
+                        while True:
+                          print("Generating data")
+                          u = 1 - 2 * numpy.random.rand(n)
+                          
+                          t = t + dt 
+                          if(t > 0.1):
+                            break
+                        
+                        participant.finalize()
+                    </code></pre>
+                </section>
+                <!-- Advance the coupling: focus -->
+                <section data-auto-animate>
+                    <h2>Advance the coupling</h2>
+                    <pre data-id="code-animation"><code class="language-python" data-trim data-line-numbers="29,44|34-42">
+                        import numpy
+                        import precice
+                        
+                        # generate mesh
+                        n = 20
+                        y = numpy.linspace(0, 1, n + 1)
+
+                        # preCICE setup
+                        participant_name     = "Generator"
+                        config_file_name     = "../precice-config.xml"
+                        solver_process_index = 0
+                        solver_process_size  = 1
+                        participant =
+                            precice.Participant(
+                                              participant_name,
+                                              config_file_name,
+                                              solver_process_index,
+                                              solver_process_size
+                                            )
+                    
+                        # Define the coupling mesh name
+                        mesh_name = "Generator-Mesh"
+                        
+                        # Define the coupling mesh
+                        vertices = [[1, y0] for y0 in y[:-1]]
+                        vertex_ids = participant.set_mesh_vertices(mesh_name, vertices)
+                        
+                        participant.initialize()
+
+                        dt = 0.01
+                        t = 0
+
+                        while True:
+                          print("Generating data")
+                          u = 1 - 2 * numpy.random.rand(n)
+                          
+                          
+                          
+                          t = t + dt 
+                          if(t > 0.1):
+                            break
+                        
+                        participant.finalize()
+                    </code></pre>
+                </section>
+                <!-- Advance the coupling: call -->
+                <section data-auto-animate>
+                    <h2>Advance the coupling</h2>
+                    <pre data-id="code-animation"><code class="language-python" data-trim data-line-numbers="34-42">
+                        import numpy
+                        import precice
+                        
+                        # generate mesh
+                        n = 20
+                        y = numpy.linspace(0, 1, n + 1)
+
+                        # preCICE setup
+                        participant_name     = "Generator"
+                        config_file_name     = "../precice-config.xml"
+                        solver_process_index = 0
+                        solver_process_size  = 1
+                        participant =
+                            precice.Participant(
+                                              participant_name,
+                                              config_file_name,
+                                              solver_process_index,
+                                              solver_process_size
+                                            )
+                    
+                        # Define the coupling mesh name
+                        mesh_name = "Generator-Mesh"
+                        
+                        # Define the coupling mesh
+                        vertices = [[1, y0] for y0 in y[:-1]]
+                        vertex_ids = participant.set_mesh_vertices(mesh_name, vertices)
+                        
+                        participant.initialize()
+
+                        dt = 0.01
+                        t = 0
+
+                        while True:
+                          print("Generating data")
+                          u = 1 - 2 * numpy.random.rand(n)
+                          
+                          participant.advance(dt)
+                          
+                          t = t + dt 
+                          if(t > 0.1):
+                            break
+                        
+                        participant.finalize()
+                    </code></pre>
+                </section>
+                <!-- Advance the coupling: end -->
+                <section data-auto-animate>
+                    <h2>Advance the coupling</h2>
+                    <pre data-id="code-animation"><code class="language-python" data-trim data-line-numbers="34-42">
+                        import numpy
+                        import precice
+                        
+                        # generate mesh
+                        n = 20
+                        y = numpy.linspace(0, 1, n + 1)
+
+                        # preCICE setup
+                        participant_name     = "Generator"
+                        config_file_name     = "../precice-config.xml"
+                        solver_process_index = 0
+                        solver_process_size  = 1
+                        participant =
+                            precice.Participant(
+                                              participant_name,
+                                              config_file_name,
+                                              solver_process_index,
+                                              solver_process_size
+                                            )
+                    
+                        # Define the coupling mesh name
+                        mesh_name = "Generator-Mesh"
+                        
+                        # Define the coupling mesh
+                        vertices = [[1, y0] for y0 in y[:-1]]
+                        vertex_ids = participant.set_mesh_vertices(mesh_name, vertices)
+                        
+                        participant.initialize()
+
+                        dt = 0.01
+                        t = 0
+
+                        while participant.is_coupling_ongoing():
+                          print("Generating data")
+                          u = 1 - 2 * numpy.random.rand(n)
+                          
+                          participant.advance(dt)
+                          
+                          t = t + dt 
+                        
+                        
+                        
+                        participant.finalize()
+                    </code></pre>
+                </section>
+                <!-- Advance the coupling: time -->
+                <section data-auto-animate>
+                    <h2>Advance the coupling</h2>
+                    <pre data-id="code-animation"><code class="language-python" data-trim data-line-numbers="34-42">
+                        import numpy
+                        import precice
+                        
+                        # generate mesh
+                        n = 20
+                        y = numpy.linspace(0, 1, n + 1)
+
+                        # preCICE setup
+                        participant_name     = "Generator"
+                        config_file_name     = "../precice-config.xml"
+                        solver_process_index = 0
+                        solver_process_size  = 1
+                        participant =
+                            precice.Participant(
+                                              participant_name,
+                                              config_file_name,
+                                              solver_process_index,
+                                              solver_process_size
+                                            )
+                    
+                        # Define the coupling mesh name
+                        mesh_name = "Generator-Mesh"
+                        
+                        # Define the coupling mesh
+                        vertices = [[1, y0] for y0 in y[:-1]]
+                        vertex_ids = participant.set_mesh_vertices(mesh_name, vertices)
+                        
+                        participant.initialize()
+
+                        dt = 0.01
+                        t = 0
+
+                        while participant.is_coupling_ongoing():
+                          print("Generating data")
+                          u = 1 - 2 * numpy.random.rand(n)
+                          
+                          participant.advance(dt)
+                          precice_dt = participant.get_max_time_step_size()
+                          
+                          t = t + dt 
+                        
+                        
+                        
+                        interface.finalize()
+                    </code></pre>
+                </section>
+                <!-- Advance the coupling: time 2-->
+                <section data-auto-animate>
+                    <h2>Advance the coupling</h2>
+                    <pre data-id="code-animation"><code class="language-python" data-trim data-line-numbers="34-42|29-30,34-42">
+                        import numpy
+                        import precice
+                        
+                        # generate mesh
+                        n = 20
+                        y = numpy.linspace(0, 1, n + 1)
+
+                        # preCICE setup
+                        participant_name     = "Generator"
+                        config_file_name     = "../precice-config.xml"
+                        solver_process_index = 0
+                        solver_process_size  = 1
+                        participant =
+                            precice.Participant(
+                                              participant_name,
+                                              config_file_name,
+                                              solver_process_index,
+                                              solver_process_size
+                                            )
+                    
+                        # Define the coupling mesh name
+                        mesh_name = "Generator-Mesh"
+                        
+                        # Define the coupling mesh
+                        vertices = [[1, y0] for y0 in y[:-1]]
+                        vertex_ids = participant.set_mesh_vertices(mesh_name, vertices)
+                        
+                        participant.initialize()
+                        precice_dt = participant.get_max_time_step_size()
+
+                        dt = 0.01
+                        t = 0
+
+                        while participant.is_coupling_ongoing():
+                          print("Generating data")
+                          u = 1 - 2 * numpy.random.rand(n)
+                          
+                          participant.advance(dt)
+                          precice_dt = participant.get_max_time_step_size()
+                          
+                          t = t + dt 
+                        
+                        interface.finalize()
+                    </code></pre>
+                </section>
+                </section>
+                <!-- Run and results -->
+                <section>
+                <section>Not there yet, but let's run it<br/><small>(similar changes in <tt>propagator.py</tt> - try it at home)</small></section>
+                <section>
+                  <p><a href="https://github.com/MakisH/ofw18-training/blob/master/videos/generator-propagator-steering.mp4"><video data-autoplay
+                        src="videos/generator-propagator-steering.mp4"></video></a></p>
+                </section>
+                <section>
+                    <h2>Nothing happening?</h2>
+                    <p><a href="https://github.com/MakisH/ofw18-training/blob/master/videos/propagator_constant.webm"><video data-autoplay src="videos/nothing happening.webm"></video></a></p>
+                    <small>Did we forget something?</small>
+                </section>
+                </section>
+                <section>
+                <!-- Write & read data: focus -->
+                <section data-auto-animate>
+                    <h2>Write & read data</h2>
+                    <pre data-id="code-animation"><code class="language-python" data-trim data-line-numbers="25-31">
+                        import numpy
+                        import precice
+                        
+                        # generate mesh
+                        n = 20
+                        y = numpy.linspace(0, 1, n + 1)
+
+                        # preCICE setup
+                        participant_name     = "Generator"
+                        config_file_name     = "../precice-config.xml"
+                        solver_process_index = 0
+                        solver_process_size  = 1
+                        participant = 
+                            precice.Participant(  
+                                               participant_name,
+                                               config_file_name,
+                                               solver_process_index,
+                                               solver_process_size
+                                             )
+                        
+                        # Get the preCICE mesh id
+                        mesh_name  = "Generator-Mesh"
+                         
+                        # Define the coupling mesh
+                        vertices   = [[1, y0] for y0 in y[:-1]]
+                        vertex_ids = participant.set_mesh_vertices(mesh_name, vertices)
+                        
+
+
+
+                        
+                        participant.initialize()
+                        precice_dt = participant.get_max_time_step_size()
+
+                        dt = 0.01
+                        t = 0
+
+                        while participant.is_coupling_ongoing():
+                          dt = np.minimum(dt, precice_dt)
+                          
+                          print("Generating data")
+                          u = 1 - 2 * numpy.random.rand(n)
+                          
+
+                          participant.advance(dt)
+                          precice_dt = participant.get_max_time_step_size()
+
+                          
+                          t = t + dt 
+                        
+                        participant.finalize()
+                    </code></pre>
+                </section>
+                <!-- Write & read data: implement -->
+                <section data-auto-animate>
+                    <h2>Write & read data</h2>
+                    <pre data-id="code-animation"><code class="language-python" data-trim data-line-numbers="25-31|42-44">
+                        import numpy
+                        import precice
+                        
+                        # generate mesh
+                        n = 20
+                        y = numpy.linspace(0, 1, n + 1)
+
+                        # preCICE setup
+                        participant_name     = "Generator"
+                        config_file_name     = "../precice-config.xml"
+                        solver_process_index = 0
+                        solver_process_size  = 1
+                        participant = 
+                            precice.Participant(  
+                                               participant_name,
+                                               config_file_name,
+                                               solver_process_index,
+                                               solver_process_size
+                                             )
+                        
+                        # Get the preCICE mesh id
+                        mesh_name  = "Generator-Mesh"
+                         
+                        # Define the coupling mesh
+                        vertices   = [[1, y0] for y0 in y[:-1]]
+                        vertex_ids = participant.set_mesh_vertices(mesh_id, vertices)
+                        
+                        # Get the exchanged data id
+                        data_name = "Data"
+                        
+                        participant.initialize()
+
+                        dt = 0.01
+                        t = 0
+
+                        while participant.is_coupling_ongoing():
+                          dt = np.minimum(dt, precice_dt)
+                          
+                          print("Generating data")
+                          u = 1 - 2 * numpy.random.rand(n)
+                          
+                          participant.write_data(mesh_name, data_name, vertex_ids, u)
+                          precice_dt = participant.advance(dt)
+                          # u[:, -1] = participant.read_data(mesh_name, data_name, vertex_ids, dt)
+                          
+                          t = t + dt 
+                        
+                        participant.finalize()
+                    </code></pre>
+                </section>
+                </section>
+                
+                <!-- Run and results, part 2 -->
+                <section>
+                <section>It should work now!</small></section>
+                <section>
+                  <p><a href="https://github.com/MakisH/ofw18-training/blob/master/videos/generator-propagator-uncoupled.mp4"><video
+                        data-autoplay src="videos/generator-propagator-coupled-new.webm"></video></a></p>
+                </section>
+                <section>
+                    <h2>Data is being transfered!</h2>
+                    <p><a href="https://github.com/MakisH/ofw18-training/blob/master/videos/propagator_coupled.webm"><video data-autoplay src="videos/propagator_coupled.webm"></video></a></p>
+                    <small>Most basic case: uni-directional, serial-explicit, nearest-neighbor mapping, ...</small>
+                </section>
+                
+                <!-- <section>
+                  <h2>Side note: Subcycling</h2>
+                  <img src="images/level1/subcycling.svg" />
+                </section> -->
+                </section>
+                
+                <!-- preCICE config -->
+                <section>
+                  <section>
+                      <h2>preCICE configuration</h2>
+                      <img src="images/level1/config-original.png" alt="Visual representation of the precice-config.xml"/>
+                      <small>Visual representation of precice-config.xml using the <a href="https://precice.org/tooling-config-visualization.html" title="preCICE config visualizer">config visualizer</a>.</small>
+                    </section>
+                </section>
+                
+                <!-- OpenFOAM + dealii -->
+                <section data-markdown="sections/level3.md" data-separator-vertical="vvv"></section>
+                
+                <section>
+                <section>
+                <h2>Configure OpenFOAM</h2>
+                <pre><code class="language-cpp" data-trim data-line-numbers="">
+                // fluid-openfoam/0/U
+                    
+                flap
+                {
+                    type            movingWallVelocity;
+                    value           uniform (0 0 0);
+                }
+                </code></pre>
+                <pre><code class="language-cpp" data-trim data-line-numbers="">
+                // fluid-openfoam/0/pointDisplacement
+                    
+                flap
+                {
+                    type            fixedValue;
+                    value           $internalField;
+                }
+                </code></pre>
+                <pre><code class="language-cpp" data-trim data-line-numbers="">
+                // fluid-openfoam/constant/dynamicMeshDict
+                    
+                solver      displacementLaplacian;
+                </code></pre>
+                </section>
+              
+                <section>
+                <h2>Load the OpenFOAM adapter</h2>
+                <pre><code class="language-cpp" data-trim data-line-numbers="">
+                // fluid-openfoam/system/controlDict
+                functions
+                {
+                    preCICE_Adapter
+                    {
+                        type preciceAdapterFunctionObject;
+                        libs ("libpreciceAdapterFunctionObject.so");
+                    }
+                }
+
+                // Don't forget to build the adapter with Allwmake
+                </code></pre>
+                </section>
+
+                <section>
+                <h2>Configure the OpenFOAM adapter</h2>
+                <pre><code class="language-cpp" data-trim data-line-numbers="">
+                // fluid-openfoam/system/preciceDict
+                preciceConfig "../precice-config.xml";
+                participant Fluid;
+
+                modules (FSI);
+
+                interfaces {
+                  Interface1 {
+                    mesh Fluid-Mesh;
+                    patches (flap);
+                    locations faceCenters;
+
+                    readData (Displacement);
+
+                    writeData (Force);
+                  };
+                };
+
+                FSI {
+                  rho rho [1 -3 0 0 0 0 0] 1;
+                }
+                </code></pre>
+                </section>
+                
+                <section>
+                <h2>Configure the dealii adapter</h2>
+                <div class="col">
+                <pre><code class="language-yaml" data-trim data-line-numbers="">
+                // solid-dealii/parameters.prm
+                    
+                subsection precice configuration
+                # Cases: FSI3 or PF for perpendicular flap
+                set Scenario = PF
+                
+                # Name of the precice configuration file
+                set precice config-file = ../precice-config.xml
+                
+                # Name of the participant in the precice-config.xml file
+                set Participant name = Solid
+                
+                # Name of the coupling mesh in the precice-config.xml file
+                set Mesh name = Solid-Mesh
+                
+                # Name of the read data in the precice-config.xml file
+                set Read data name = Force
+                
+                # Name of the write data in the precice-config.xml file
+                set Write data name = Displacement
+                </code></pre>
+                </div>
+                </section>
+
+                <section>
+                  <h2>Configure preCICE</h2>
+                  <img src="images/level3/precice-config.png"/>
+                </section>
+
+                <section>
+                  <h2>Configure preCICE</h2>
+                  <div class="col">
+                    <pre><code class="language-xml" data-trim data-line-numbers="1-2|4-12|14-30|14,18-19,30|14,20-24,30|39|41-47">
+                      &lt;data:vector name="Force" /&gt;
+                      &lt;data:vector name="Displacement" /&gt;
+
+                      &lt;mesh name="Fluid-Mesh" dimensions="2"&gt;
+                        &lt;use-data name="Force" /&gt;
+                        &lt;use-data name="Displacement" /&gt;
+                      &lt;/mesh&gt;
+
+                      &lt;mesh name="Solid-Mesh" dimensions="2"&gt;
+                        &lt;use-data name="Displacement" /&gt;
+                        &lt;use-data name="Force" /&gt;
+                      &lt;/mesh&gt;
+
+                      &lt;participant name="Fluid"&gt;
+                        &lt;export:vtk directory="results" /&gt;
+                        &lt;provide-mesh name="Fluid-Mesh" /&gt;
+                        &lt;receive-mesh name="Solid-Mesh" from="Solid" /&gt;
+                        &lt;write-data name="Force" mesh="Fluid-Mesh" /&gt;
+                        &lt;read-data name="Displacement" mesh="Fluid-Mesh" /&gt;
+                        &lt;mapping:rbf-thin-plate-splines
+                          direction="write"
+                          from="Fluid-Mesh"
+                          to="Solid-Mesh"
+                          constraint="conservative" /&gt;
+                        &lt;mapping:rbf-thin-plate-splines
+                          direction="read"
+                          from="Solid-Mesh"
+                          to="Fluid-Mesh"
+                          constraint="consistent" /&gt;
+                      &lt;/participant&gt;
+
+                      &lt;participant name="Solid"&gt;
+                        &lt;provide-mesh name="Solid-Mesh" /&gt;
+                        &lt;receive-data name="Displacement" mesh="Solid-Mesh" /&gt;
+                        &lt;read-data name="Force" mesh="Solid-Mesh" /&gt;
+                        &lt;watch-point mesh="Solid-Mesh" name="Flap-Tip" coordinate="0.0;1" /&gt;
+                      &lt;/participant&gt;
+
+                      &lt;m2n:sockets acceptor="Fluid" connector="Solid" exchange-directory=".." /&gt;
+
+                      &lt;coupling-scheme:serial-explicit&gt;
+                        &lt;participants first="Fluid" second="Solid" /&gt;
+                        &lt;max-time value="1.5" /&gt;
+                        &lt;time-window-size value="0.01" /&gt;
+                        &lt;exchange data="Force" mesh="Solid-Mesh" from="Fluid" to="Solid" /&gt;
+                        &lt;exchange data="Displacement" mesh="Solid-Mesh" from="Solid" to="Fluid" /&gt;
+                      &lt;/coupling-scheme:serial-explicit&gt;
+                    </code></pre>
+                  </div>
+                  <small>Notice the serial-explicit coupling scheme</small>
+                </section>
+                </section>
+                
+                <section>
+                <section>
+                  <p><a href="https://github.com/MakisH/ofw18-training/blob/master/videos/execution-serial-explicit.mp4"><video
+                        data-autoplay src="videos/execution-serial-explicit.mp4" style="max-height:800px;"></video></a></p>
+                </section>
+                <section>
+                  <p><a href="https://github.com/MakisH/ofw18-training/blob/master/videos/video-explicit.ogv"><img
+                        src="images/level3/screenshot-explicit.png" style="max-height:800px;"></img></a></p>
+                </section>
+                <section>
+                  <small>When we decrease the solid density further to 1, the participants have stronger coupling, then:</small>
+                    <p><a href="https://github.com/MakisH/ofw18-training/blob/master/videos/execution-serial-explicit.mp4"><video
+                          data-autoplay src="videos/se-ex.webm" style="max-height:800px;"></video></a></p>
+                </section>
+                <section>
+                  <h2>What we did so far: serial-explicit scheme</h2>
+                  <img src="images/level3/scheme-serial-explicit.png" style="max-height:800px;"><img>
+                </section>
+
+                <section>
+                  <h2>Let's try an implicit coupling scheme</h2>
+                  <img src="images/level3/scheme-serial-implicit.png" style="max-height:800px;"><img>
+                </section>
+                <section>
+                  <h2>Configure the coupling scheme</h2>
+                  <div class="col">
+                    <pre><code class="language-xml" data-trim data-trim data-line-numbers="1,10|2|3-4|5-6|7-9">
+                        &lt;coupling-scheme:serial-implicit&gt;
+                          &lt;participants first="Fluid" second="Solid" /&gt;
+                          &lt;max-time value="1.5" /&gt;
+                          &lt;time-window-size value="0.01" /&gt;
+                          &lt;exchange data="Force" mesh="Solid-Mesh" from="Fluid" to="Solid" /&gt;
+                          &lt;exchange data="Displacement" mesh="Solid-Mesh" from="Solid" to="Fluid" /&gt;
+                          &lt;relative-convergence-measure limit="5e-3" data="Displacement" mesh="Solid-Mesh" /&gt;
+                          &lt;relative-convergence-measure limit="5e-3" data="Force" mesh="Solid-Mesh" /&gt;
+                          &lt;max-iterations value="50" /&gt;
+                        &lt;/coupling-scheme:serial-implicit&gt;
+                    </code></pre>
+                  </div>
+                  <small>Only change from explicit to implicit coupling</small>
+                </section>
+                <section>
+                  <small>With solid density equal to 42:</small>
+                  <p><a href="https://github.com/MakisH/ofw18-training/blob/master/videos/execution-serial-explicit.mp4"><video
+                        data-autoplay src="videos/se-im-42.webm" style="max-height:800px;"></video></a></p>
+                  <small>Average iteration number per time step: 3.41</small>
+                </section>
+                <section>
+                  With solid density equal to 1:      
+                  break again!
+                </section>
+                <section>
+                  <h2>Still not enough stability for strong coupling!</h2>
+                </section>
+                <section>
+                  <h2>Configure the coupling scheme</h2>
+                  <div class="col">
+                    <pre><code class="language-xml" data-trim data-trim data-line-numbers="10-12">
+                        &lt;coupling-scheme:serial-implicit&gt;
+                          &lt;participants first="Fluid" second="Solid" /&gt;
+                          &lt;max-time value="1.5" /&gt;
+                          &lt;time-window-size value="0.01" /&gt;
+                          &lt;exchange data="Force" mesh="Solid-Mesh" from="Fluid" to="Solid" /&gt;
+                          &lt;exchange data="Displacement" mesh="Solid-Mesh" from="Solid" to="Fluid" /&gt;
+                          &lt;relative-convergence-measure limit="5e-3" data="Displacement" mesh="Solid-Mesh" /&gt;
+                          &lt;relative-convergence-measure limit="5e-3" data="Force" mesh="Solid-Mesh" /&gt;
+                          &lt;max-iterations value="50" /&gt;
+                          &lt;acceleration:constant&gt;
+                            &lt;relaxation value="0.5" /&gt;
+                          &lt;/acceleration:constant&gt;
+                        &lt;/coupling-scheme:serial-implicit&gt;
+                    </code></pre>
+                  </div>
+                  <small>Simplest acceleration: constant under-relaxation</small>
+                </section>
+                <section>
+                  <small>With solid density equal to 1:</small>
+                  <p><a href="https://github.com/MakisH/ofw18-training/blob/master/videos/execution-serial-explicit.mp4"><video
+                        data-autoplay src="videos/se-im-const-1.webm" style="max-height:800px;"></video></a></p>
+                  <small>Average iteration number per time step: 5.27</small>
+                </section>
+           
+                <section>
+                  <h2>Too slow! Can we do better?</h2>
+                </section>
+
+                <section>
+                <h2>Improvement 1: Aitken under-relaxation</h2>
+                  <div class="col">
+                    <pre><code class="language-xml" data-trim>
+                        &lt;acceleration:aitken&gt;
+                          &lt;data name="Displacement" mesh="Solid-Mesh" /&gt;
+                          &lt;initial-relaxation value="0.5" /&gt;
+                        &lt;/acceleration:aitken&gt;
+                    </code></pre>
+                  </div>
+                </section>
+
+                <section>
+                <h2>Improvement 2: Anderson acceleration</h2>
+                  <div class="col">
+                    <pre><code class="language-xml" data-trim data-line-numbers="1-3,8|4-7">
+                      &lt;acceleration:IQN-ILS&gt;
+                        &lt;data name="Displacement" mesh="Solid-Mesh" /&gt;
+                        &lt;initial-relaxation value="0.5" /&gt;
+                        &lt;preconditioner type="residual-sum" /&gt;
+                        &lt;filter type="QR2" limit="1e-2" /&gt;
+                        &lt;max-used-iterations value="100" /&gt;
+                        &lt;time-windows-reused value="15" /&gt;
+                      &lt;/acceleration:IQN-ILS>
+                    </code></pre>
+                  </div>
+                </section>
+
+                <section>
+                  <h2>There are also parallel schemes</h2>
+                  <img src="images/level3/scheme-parallel-implicit.png" style="max-height:800px;"><img>
+                  <small>Can use fields from both / all participants</small>
+                </section>
+
+                <section>
+                <h2>Improvement 3: Parallel coupling schemes</h2>
+                  <div class="col">
+                    <pre><code class="language-xml" data-trim data-line-numbers="1,19|10-12,18">
+                    &lt;coupling-scheme:parallel-implicit&gt;
+                      &lt;time-window-size value="0.01" /&gt;
+                      &lt;max-time value="1.5" /&gt;
+                      &lt;participants first="Fluid" second="Solid" /&gt;
+                      &lt;exchange data="Force" mesh="Solid-Mesh" from="Fluid" to="Solid" /&gt;
+                      &lt;exchange data="Displacement" mesh="Solid-Mesh" from="Solid" to="Fluid" /&gt;
+                      &lt;max-iterations value="50" /&gt;
+                      &lt;relative-convergence-measure limit="5e-3" data="Displacement" mesh="Solid-Mesh" /&gt;
+                      &lt;relative-convergence-measure limit="5e-3" data="Force" mesh="Solid-Mesh" /&gt;
+                      &lt;acceleration:IQN-ILS&gt;
+                        &lt;data name="Displacement" mesh="Solid-Mesh" /&gt;
+                        &lt;data name="Force" mesh="Solid-Mesh" /&gt;
+                        &lt;initial-relaxation value="0.5" /&gt;
+                        &lt;preconditioner type="residual-sum" /&gt;
+                        &lt;filter type="QR2" limit="1e-2" /&gt;
+                        &lt;max-used-iterations value="100" /&gt;
+                        &lt;time-windows-reused value="15" /&gt;
+                      &lt;/acceleration:IQN-ILS&gt;
+                    &lt;/coupling-scheme:parallel-implicit&gt;
+                    </code></pre>
+                  </div>
+                </section>
+                <section>
+
+                  <table>
+                    <tr>
+                      <th></th>
+                      <th>density = 42</th>
+                      <th>density = 1</th>
+                    </tr>
+                    <tr>
+                      <td>serial-explicit</td>
+                      <td>div</td>
+                      <td>div</td>
+                    </tr>
+                    <tr>
+                      <td>se-implicit</td>
+                      <td>3.41</td>
+                      <td>div</td>
+                    </tr>
+                    <tr>
+                      <td>se-im-const</td>
+                      <td>4.48</td>
+                      <td>5.27</td>
+                    </tr>
+                    <tr>
+                      <td>se-im-Aitken</td>
+                      <td>3.74</td>
+                      <td>5.3</td>
+                    </tr>
+                    <tr> 
+                      <td>se-im-ILS</td>
+                      <td>2.95</td>
+                      <td>3.07</td>
+                    </tr>
+                    <tr>
+                      <td>parallel-im-ILS</td>
+                      <td>2.46</td>
+                      <td>2.33</td>
+                    </tr>
+                  </table>
+
+                </section>
+
+                <section>
+                  <!-- <h2>Summary of options</h2> -->
+                  <img src="images/level3/iterations.png" style="max-height:600px;"/>
+                  <small>Beware: Configuration not fine-tuned, not rigorous comparison, application context.</small>
+                </section>
+
+                <section>
+                  <h2>Rigorous comparison from the literature</h2>
+                  <table>
+                    <tr>
+                      <th>Mean iterations</th>
+                      <th>Aitken</th>
+                      <th>Quasi-Newton</th>
+                    </tr>
+                    <tr>
+                      <td>FSI3</td>
+                      <td> </td>
+                      <td> </td>
+                    </tr>
+                    <tr>
+                      <td>3D-Tube</td>
+                      <td>25.22</td>
+                      <td>5.05</td>
+                    </tr>
+                  </table>
+                </section>
+
+                <section>
+                    <table>
+                      <tr>
+                        <th>Mean iterations</th>
+                        <th>Serial</th>
+                        <th>Parallel</th>
+                      </tr>
+                      <tr>
+                        <td>FSI3</td>
+                        <td>div</td>
+                        <td>div</td>
+                      </tr>
+                      <tr>
+                        <td>3D-Tube</td>
+                        <td>5.05</td>
+                        <td>6.37</td>
+                      </tr>
+                    </table>
+                </section>
+                </section>
+
+                <!-- Resources -->
+                <section data-markdown="sections/resources.md" data-separator-vertical="vvv"></section>
+                
+                <!-- Closing -->
+                <section data-markdown="sections/closing.md" data-separator-vertical="vvv"></section>
+            </div>
+        </div>
+
+        <script src="dist/reveal.js"></script>
+        <script src="plugin/notes/notes.js"></script>
+        <script src="plugin/markdown/markdown.js"></script>
+        <script src="plugin/highlight/highlight.js"></script>
+        <script>
+            // More info about initialization & config:
+            // - https://revealjs.com/initialization/
+            // - https://revealjs.com/config/
+            Reveal.initialize({
+                width: 960,
+                height: 700,
+                center: true,
+                controls: true,
+                controlsTutorial: false,
+                progress: true,
+                slideNumber: false,
+                center: true,
+                hash: true,
+                transition: 'none', // none/fade/slide/convex/concave/zoom
+                backgroundTransition: 'none', // none/fade/slide/convex/concave/zoom
+                defaultTiming: 50,
+                slideNumber: 'c/t',
+                // Learn about plugins: https://revealjs.com/plugins/
+                plugins: [ RevealMarkdown, RevealHighlight, RevealNotes ]
+            });
+        </script>
+    </body>
+</html>
