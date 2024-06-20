@@ -12,7 +12,7 @@ vvv
 
 # Incoming Workshop
 
-poster/ where to put this to get more attention?
+![](images/closing/precice2024.svg)
 
 
 ---
@@ -33,9 +33,9 @@ poster/ where to put this to get more attention?
 </div>
 
 <div>
-  <small>Jun Chen(UST) + Gerasimos Chourdakis (TUM) + many more (see <a href="https://www.precice.org/about/">precice.org/about</a>)</small>  
-  <small>Please give me feedback on this talk: <a href="http://go.tum.de/530822">go.tum.de/530822</a><br/>
+  <small>Jun Chen(UST) + Gerasimos Chourdakis (UST/TUM) + many more (see <a href="https://www.precice.org/about/">precice.org/about</a>)</small>  
+
   <img src="images/closing/QRCode.png" style="max-height:150px;"/></small>
   
-  <small><a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.<br/> <a href="http://go.tum.de/530822">Get these slides</a>.</small>
+  <small><a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.<br/> <a href="https://github.com/MakisH/ofw19-training">Get these slides</a>.</small>
 </div>

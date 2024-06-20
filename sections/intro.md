@@ -31,7 +31,7 @@ vvv
 ## Where preCICE helps
 
 ![](images/intro/precice-features.png) 
-*It's not experimental anymore.*
+
 vvv
 
 ## What people do with preCICE (1)
@@ -73,18 +73,16 @@ vvv
 
 ## Get the slides
 
-<img src="images/closing/QRCode.png" style="max-height:700px;"/>
+<img src="images/closing/QRCode.png" style="max-height:450px;"/>
 
-<a href="http://go.tum.de/530822">go.tum.de/530822</a>
+<a href="https://github.com/MakisH/ofw19-training">github.com/MakisH/ofw19-training</a>
 
-Update required
 vvv
 
 ## Organizational notes
 
 1. You are not expected to try things live.
 2. Ask questions live, feel free to interrupt me.
-3. Some Live USB sticks available during the workshop
-4. Find all software installed in a demo virtual machine:<br/>
+3. Find all software installed in a demo virtual machine:<br/>
 <a href="https://precice.org/installation-vm.html">precice.org/installation-vm.html</a>
-5. Everything presented here is free software. preCICE and all the adapters are developed publicly on GitHub: <a href="https://github.com/precice/">github.com/precice</a>
+4. Everything presented here is free software. preCICE and all the adapters are developed publicly on GitHub: <a href="https://github.com/precice/">github.com/precice</a>

@@ -1,6 +1,6 @@
 # Using the preCICE ecosystem
 
-Example: Coupling OpenFOAM and CalculiX
+Example: Coupling OpenFOAM and deal.II
 
 ---
 
@@ -50,7 +50,7 @@ vvv
 
 ---
 
-![](images/level3/quickstart.png)
+<img src="images/level3/quickstart.png" style="max-height:500px;"/>
 
 ---
 
@@ -87,7 +87,7 @@ vvv
 ## Dependencies
 
 - [preCICE](https://precice.org/installation-overview.html) v3 (e.g. [packages for Ubuntu](https://github.com/precice/precice/releases))
-- Recent OpenFOAM (e.g., v2306)
+- Recent OpenFOAM (e.g., v2312)
 - [OpenFOAM-preCICE adapter](https://precice.org/adapter-openfoam-overview.html) v1.3.0
 - [deal.II](https://www.dealii.org/) 9.2 or greater
 - [deal.II-preCICE adapter](https://precice.org/adapter-dealii-overview.html) 9.5.0

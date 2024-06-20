@@ -22,7 +22,7 @@ vvv
 
 <a href="https://precice.discourse.group/" title="preCICE forum on Discourse"><img data-src="images/resources/discourse.png" style="border:none; box-shadow:none; height:500px;"></a>
 
-<small>Active since October 2019, 380+ users, 5k posts in 600+ topics</small>
+<small>Active since October 2019, 480+ users, 7k posts in 800+ topics</small>
 
 vvv
 
@@ -30,7 +30,7 @@ vvv
 
 <a href="https://www.youtube.com/c/preCICECoupling" title="preCICE channel on YouTube"><img data-src="images/resources/youtube.png" style="border:none; box-shadow:none; height:500px;"></a>
 
-<small>Active since 2020, 450+ subscribers, 40+ videos</small>
+<small>Active since 2020, 580+ subscribers, 50+ videos</small>
 
 vvv
 
@@ -48,6 +48,6 @@ vvv
 
 vvv
 
-## Read more: New v2 reference paper
+## Read more: preCICE paper
 
 <a href="https://open-research-europe.ec.europa.eu/articles/2-51/v2" title="Open Research Europe"><img data-src="images/resources/precice-v2-paper.png" style="border:none; box-shadow:none; height:400px;"></a>
