@@ -583,10 +583,6 @@
                 <section>
                 <section>Not there yet, but let's run it<br/><small>(similar changes in <tt>propagator.py</tt> - try it at home)</small></section>
                 <section>
-                  <p><a href="https://github.com/MakisH/ofw18-training/blob/master/videos/generator-propagator-steering.mp4"><video data-autoplay
-                        src="videos/generator-propagator-steering.mp4"></video></a></p>
-                </section>
-                <section>
                     <h2>Nothing happening?</h2>
                     <p><a href="https://github.com/MakisH/ofw18-training/blob/master/videos/propagator_constant.webm"><video data-autoplay src="videos/nothing happening.webm"></video></a></p>
                     <small>Did we forget something?</small>
@@ -617,7 +613,7 @@
                                                solver_process_size
                                              )
                         
-                        # Get the preCICE mesh id
+                        # Get the preCICE mesh name
                         mesh_name  = "Generator-Mesh"
                          
                         # Define the coupling mesh
@@ -674,14 +670,14 @@
                                                solver_process_size
                                              )
                         
-                        # Get the preCICE mesh id
+                        # Get the preCICE mesh name
                         mesh_name  = "Generator-Mesh"
                          
                         # Define the coupling mesh
                         vertices   = [[1, y0] for y0 in y[:-1]]
                         vertex_ids = participant.set_mesh_vertices(mesh_id, vertices)
                         
-                        # Get the exchanged data id
+                        # Get the exchanged data name
                         data_name = "Data"
                         
                         participant.initialize()
@@ -715,7 +711,7 @@
                 </section>
                 <section>
                     <h2>Data is being transfered!</h2>
-                    <p><a href="https://github.com/MakisH/ofw18-training/blob/master/videos/propagator_coupled.webm"><video data-autoplay src="videos/propagator_coupled.webm"></video></a></p>
+                    <p><img src="images/toy_simulation/final.png" style="max-height:400px;"></img></p>
                     <small>Most basic case: uni-directional, serial-explicit, nearest-neighbor mapping, ...</small>
                 </section>
                 
@@ -1095,43 +1091,14 @@
 
                 <section>
                   <h2>Rigorous comparison from the literature</h2>
-                  <table>
-                    <tr>
-                      <th>Mean iterations</th>
-                      <th>Aitken</th>
-                      <th>Quasi-Newton</th>
-                    </tr>
-                    <tr>
-                      <td>FSI3</td>
-                      <td> </td>
-                      <td> </td>
-                    </tr>
-                    <tr>
-                      <td>3D-Tube</td>
-                      <td>25.22</td>
-                      <td>5.05</td>
-                    </tr>
-                  </table>
+                  <img src="images/level3/rigorous-comparison-aitken-iqn.png" style="max-height:600px;" />
+                  <small>Source: Dissertation of Benjamin Uekermann (2016)</small>
                 </section>
 
                 <section>
-                    <table>
-                      <tr>
-                        <th>Mean iterations</th>
-                        <th>Serial</th>
-                        <th>Parallel</th>
-                      </tr>
-                      <tr>
-                        <td>FSI3</td>
-                        <td>div</td>
-                        <td>div</td>
-                      </tr>
-                      <tr>
-                        <td>3D-Tube</td>
-                        <td>5.05</td>
-                        <td>6.37</td>
-                      </tr>
-                    </table>
+                  <h2>Rigorous comparison from the literature</h2>
+                  <img src="images/level3/rigorous-comparison-serial-parallel.png" style="max-height:600px;" />
+                  <small>Source: Dissertation of Benjamin Uekermann (2016)</small>
                 </section>
                 </section>
 
