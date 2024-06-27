@@ -55,7 +55,7 @@
 
                         ## Dependencies
 
-                        - [preCICE](https://precice.org/installation-overview.html) v2 (e.g. [packages for Ubuntu](https://github.com/precice/precice/releases))
+                        - [preCICE](https://precice.org/installation-overview.html) v3 (e.g. [packages for Ubuntu](https://github.com/precice/precice/releases))
                         - Python 3
                         - Python packages `numpy`, `matplotlib`
                         - [preCICE Python bindings](https://precice.org/installation-bindings-python.html):
@@ -222,8 +222,8 @@
                         config_file_name     = "../precice-config.xml"
                         solver_process_index = 0
                         solver_process_size  = 1
-                        interface = 
-                            precice.Interface(  
+                        participant = 
+                            precice.Participant(  
                                                participant_name,
                                                config_file_name,
                                                solver_process_index,
@@ -258,21 +258,20 @@
                         config_file_name     = "../precice-config.xml"
                         solver_process_index = 0
                         solver_process_size  = 1
-                        interface = 
-                            precice.Interface(  
+                        participant =
+                            precice.Participant(
                                                participant_name,
                                                config_file_name,
                                                solver_process_index,
                                                solver_process_size
                                              )
                         
-                        # Get the preCICE mesh id
+                        # Define the coupling mesh name
                         mesh_name  = "Generator-Mesh"
-                        mesh_id    = interface.get_mesh_id(mesh_name)
                         
                         # Define the coupling mesh
                         vertices   = [[1, y0] for y0 in y[:-1]]
-                        vertex_ids = interface.set_mesh_vertices(mesh_id, vertices)
+                        vertex_ids = participant.set_mesh_vertices(mesh_name, positions)
                         
                         dt = 0.01
                         t = 0
@@ -302,23 +301,22 @@
                         config_file_name     = "../precice-config.xml"
                         solver_process_index = 0
                         solver_process_size  = 1
-                        interface = 
-                            precice.Interface(  
+                        participant = 
+                            precice.Participant(  
                                                participant_name,
                                                config_file_name,
                                                solver_process_index,
                                                solver_process_size
                                              )
                         
-                        # Get the preCICE mesh id
-                        mesh_name  = "Generator-Mesh"
-                        mesh_id    = interface.get_mesh_id(mesh_name)
+                        # Define the coupling mesh name
+                        mesh_name = "Generator-Mesh"
                         
                         # Define the coupling mesh
-                        vertices   = [[1, y0] for y0 in y[:-1]]
-                        vertex_ids = interface.set_mesh_vertices(mesh_id, vertices)
+                        vertices = [[1, y0] for y0 in y[:-1]]
+                        vertex_ids = participant.set_mesh_vertices(mesh_name, vertices)
                         
-                        interface.initialize()
+                        participant.initialize()
 
                         dt = 0.01
                         t = 0
@@ -331,7 +329,7 @@
                           if(t > 0.1):
                             break
                         
-                        interface.finalize()
+                        participant.finalize()
                     </code></pre>
                 </section>
                 <!-- Advance the coupling: focus -->
@@ -350,23 +348,22 @@
                         config_file_name     = "../precice-config.xml"
                         solver_process_index = 0
                         solver_process_size  = 1
-                        interface = 
-                            precice.Interface(  
-                                               participant_name,
-                                               config_file_name,
-                                               solver_process_index,
-                                               solver_process_size
-                                             )
-                                             
-                        # Get the preCICE mesh id
-                        mesh_name  = "Generator-Mesh"
-                        mesh_id    = interface.get_mesh_id(mesh_name)
-                         
-                        # Define the coupling mesh
-                        vertices   = [[1, y0] for y0 in y[:-1]]
-                        vertex_ids = interface.set_mesh_vertices(mesh_id, vertices)
+                        participant =
+                            precice.Participant(
+                                              participant_name,
+                                              config_file_name,
+                                              solver_process_index,
+                                              solver_process_size
+                                            )
+                    
+                        # Define the coupling mesh name
+                        mesh_name = "Generator-Mesh"
                         
-                        interface.initialize()
+                        # Define the coupling mesh
+                        vertices = [[1, y0] for y0 in y[:-1]]
+                        vertex_ids = participant.set_mesh_vertices(mesh_name, vertices)
+                        
+                        participant.initialize()
 
                         dt = 0.01
                         t = 0
@@ -381,7 +378,7 @@
                           if(t > 0.1):
                             break
                         
-                        interface.finalize()
+                        participant.finalize()
                     </code></pre>
                 </section>
                 <!-- Advance the coupling: call -->
@@ -400,23 +397,22 @@
                         config_file_name     = "../precice-config.xml"
                         solver_process_index = 0
                         solver_process_size  = 1
-                        interface = 
-                            precice.Interface(  
-                                               participant_name,
-                                               config_file_name,
-                                               solver_process_index,
-                                               solver_process_size
-                                             )
+                        participant =
+                            precice.Participant(
+                                              participant_name,
+                                              config_file_name,
+                                              solver_process_index,
+                                              solver_process_size
+                                            )
+                    
+                        # Define the coupling mesh name
+                        mesh_name = "Generator-Mesh"
                         
-                         # Get the preCICE mesh id
-                         mesh_name  = "Generator-Mesh"
-                         mesh_id    = interface.get_mesh_id(mesh_name)
-                         
-                         # Define the coupling mesh
-                         vertices   = [[1, y0] for y0 in y[:-1]]
-                         vertex_ids = interface.set_mesh_vertices(mesh_id, vertices)
+                        # Define the coupling mesh
+                        vertices = [[1, y0] for y0 in y[:-1]]
+                        vertex_ids = participant.set_mesh_vertices(mesh_name, vertices)
                         
-                        interface.initialize()
+                        participant.initialize()
 
                         dt = 0.01
                         t = 0
@@ -425,13 +421,13 @@
                           print("Generating data")
                           u = 1 - 2 * numpy.random.rand(n)
                           
-                          interface.advance(dt)
+                          participant.advance(dt)
                           
                           t = t + dt 
                           if(t > 0.1):
                             break
                         
-                        interface.finalize()
+                        participant.finalize()
                     </code></pre>
                 </section>
                 <!-- Advance the coupling: end -->
@@ -450,38 +446,37 @@
                         config_file_name     = "../precice-config.xml"
                         solver_process_index = 0
                         solver_process_size  = 1
-                        interface = 
-                            precice.Interface(  
-                                               participant_name,
-                                               config_file_name,
-                                               solver_process_index,
-                                               solver_process_size
-                                             )
-                        
-                        # Get the preCICE mesh id
-                        mesh_name  = "Generator-Mesh"
-                        mesh_id    = interface.get_mesh_id(mesh_name)
+                        participant =
+                            precice.Participant(
+                                              participant_name,
+                                              config_file_name,
+                                              solver_process_index,
+                                              solver_process_size
+                                            )
+                    
+                        # Define the coupling mesh name
+                        mesh_name = "Generator-Mesh"
                         
                         # Define the coupling mesh
-                        vertices   = [[1, y0] for y0 in y[:-1]]
-                        vertex_ids = interface.set_mesh_vertices(mesh_id, vertices)
+                        vertices = [[1, y0] for y0 in y[:-1]]
+                        vertex_ids = participant.set_mesh_vertices(mesh_name, vertices)
                         
-                        interface.initialize()
+                        participant.initialize()
 
                         dt = 0.01
                         t = 0
 
-                        while interface.is_coupling_ongoing():
+                        while participant.is_coupling_ongoing():
                           print("Generating data")
                           u = 1 - 2 * numpy.random.rand(n)
                           
-                          interface.advance(dt)
+                          participant.advance(dt)
                           
                           t = t + dt 
                         
                         
                         
-                        interface.finalize()
+                        participant.finalize()
                     </code></pre>
                 </section>
                 <!-- Advance the coupling: time -->
@@ -500,32 +495,32 @@
                         config_file_name     = "../precice-config.xml"
                         solver_process_index = 0
                         solver_process_size  = 1
-                        interface = 
-                            precice.Interface(  
-                                               participant_name,
-                                               config_file_name,
-                                               solver_process_index,
-                                               solver_process_size
-                                             )
-                        
-                        # Get the preCICE mesh id
-                        mesh_name  = "Generator-Mesh"
-                        mesh_id    = interface.get_mesh_id(mesh_name)
+                        participant =
+                            precice.Participant(
+                                              participant_name,
+                                              config_file_name,
+                                              solver_process_index,
+                                              solver_process_size
+                                            )
+                    
+                        # Define the coupling mesh name
+                        mesh_name = "Generator-Mesh"
                         
                         # Define the coupling mesh
-                        vertices   = [[1, y0] for y0 in y[:-1]]
-                        vertex_ids = interface.set_mesh_vertices(mesh_id, vertices)
+                        vertices = [[1, y0] for y0 in y[:-1]]
+                        vertex_ids = participant.set_mesh_vertices(mesh_name, vertices)
                         
-                        interface.initialize()
+                        participant.initialize()
 
                         dt = 0.01
                         t = 0
 
-                        while interface.is_coupling_ongoing():
+                        while participant.is_coupling_ongoing():
                           print("Generating data")
                           u = 1 - 2 * numpy.random.rand(n)
                           
-                          precice_dt = interface.advance(dt)
+                          participant.advance(dt)
+                          precice_dt = participant.get_max_time_step_size()
                           
                           t = t + dt 
                         
@@ -537,7 +532,7 @@
                 <!-- Advance the coupling: time 2-->
                 <section data-auto-animate>
                     <h2>Advance the coupling</h2>
-                    <pre data-id="code-animation"><code class="language-python" data-trim data-line-numbers="34-42|29,34-42">
+                    <pre data-id="code-animation"><code class="language-python" data-trim data-line-numbers="34-42|29-30,34-42">
                         import numpy
                         import precice
                         
@@ -550,34 +545,33 @@
                         config_file_name     = "../precice-config.xml"
                         solver_process_index = 0
                         solver_process_size  = 1
-                        interface = 
-                            precice.Interface(  
-                                               participant_name,
-                                               config_file_name,
-                                               solver_process_index,
-                                               solver_process_size
-                                             )
-                        
-                        # Get the preCICE mesh id
-                        mesh_name  = "Generator-Mesh"
-                        mesh_id    = interface.get_mesh_id(mesh_name)
+                        participant =
+                            precice.Participant(
+                                              participant_name,
+                                              config_file_name,
+                                              solver_process_index,
+                                              solver_process_size
+                                            )
+                    
+                        # Define the coupling mesh name
+                        mesh_name = "Generator-Mesh"
                         
                         # Define the coupling mesh
-                        vertices   = [[1, y0] for y0 in y[:-1]]
-                        vertex_ids = interface.set_mesh_vertices(mesh_id, vertices)
+                        vertices = [[1, y0] for y0 in y[:-1]]
+                        vertex_ids = participant.set_mesh_vertices(mesh_name, vertices)
                         
-                        precice_dt = interface.initialize()
+                        participant.initialize()
+                        precice_dt = participant.get_max_time_step_size()
 
                         dt = 0.01
                         t = 0
 
-                        while interface.is_coupling_ongoing():
-                          dt = np.minimum(dt, precice_dt)
-                          
+                        while participant.is_coupling_ongoing():
                           print("Generating data")
                           u = 1 - 2 * numpy.random.rand(n)
                           
-                          precice_dt = interface.advance(dt)
+                          participant.advance(dt)
+                          precice_dt = participant.get_max_time_step_size()
                           
                           t = t + dt 
                         
@@ -589,12 +583,8 @@
                 <section>
                 <section>Not there yet, but let's run it<br/><small>(similar changes in <tt>propagator.py</tt> - try it at home)</small></section>
                 <section>
-                  <p><a href="https://github.com/MakisH/ofw18-training/blob/master/videos/generator-propagator-steering.mp4"><video data-autoplay
-                        src="videos/generator-propagator-steering.mp4"></video></a></p>
-                </section>
-                <section>
                     <h2>Nothing happening?</h2>
-                    <p><a href="https://github.com/MakisH/ofw18-training/blob/master/videos/propagator_constant.webm"><video data-autoplay src="videos/propagator_constant.webm"></video></a></p>
+                    <p><a href="https://github.com/MakisH/ofw18-training/blob/master/videos/propagator_constant.webm"><video data-autoplay src="videos/nothing happening.webm"></video></a></p>
                     <small>Did we forget something?</small>
                 </section>
                 </section>
@@ -615,50 +605,51 @@
                         config_file_name     = "../precice-config.xml"
                         solver_process_index = 0
                         solver_process_size  = 1
-                        interface = 
-                            precice.Interface(  
+                        participant = 
+                            precice.Participant(  
                                                participant_name,
                                                config_file_name,
                                                solver_process_index,
                                                solver_process_size
                                              )
                         
-                        # Get the preCICE mesh id
+                        # Get the preCICE mesh name
                         mesh_name  = "Generator-Mesh"
-                        mesh_id    = interface.get_mesh_id(mesh_name)
                          
                         # Define the coupling mesh
                         vertices   = [[1, y0] for y0 in y[:-1]]
-                        vertex_ids = interface.set_mesh_vertices(mesh_id, vertices)
+                        vertex_ids = participant.set_mesh_vertices(mesh_name, vertices)
                         
 
 
 
                         
-                        precice_dt = interface.initialize()
+                        participant.initialize()
+                        precice_dt = participant.get_max_time_step_size()
 
                         dt = 0.01
                         t = 0
 
-                        while interface.is_coupling_ongoing():
+                        while participant.is_coupling_ongoing():
                           dt = np.minimum(dt, precice_dt)
                           
                           print("Generating data")
                           u = 1 - 2 * numpy.random.rand(n)
                           
 
-                          precice_dt = interface.advance(dt)
+                          participant.advance(dt)
+                          precice_dt = participant.get_max_time_step_size()
 
                           
                           t = t + dt 
                         
-                        interface.finalize()
+                        participant.finalize()
                     </code></pre>
                 </section>
                 <!-- Write & read data: implement -->
                 <section data-auto-animate>
                     <h2>Write & read data</h2>
-                    <pre data-id="code-animation"><code class="language-python" data-trim data-line-numbers="25-31|44-46">
+                    <pre data-id="code-animation"><code class="language-python" data-trim data-line-numbers="25-31|42-44">
                         import numpy
                         import precice
                         
@@ -671,44 +662,42 @@
                         config_file_name     = "../precice-config.xml"
                         solver_process_index = 0
                         solver_process_size  = 1
-                        interface = 
-                            precice.Interface(  
+                        participant = 
+                            precice.Participant(  
                                                participant_name,
                                                config_file_name,
                                                solver_process_index,
                                                solver_process_size
                                              )
                         
-                        # Get the preCICE mesh id
+                        # Get the preCICE mesh name
                         mesh_name  = "Generator-Mesh"
-                        mesh_id    = interface.get_mesh_id(mesh_name)
                          
                         # Define the coupling mesh
                         vertices   = [[1, y0] for y0 in y[:-1]]
-                        vertex_ids = interface.set_mesh_vertices(mesh_id, vertices)
+                        vertex_ids = participant.set_mesh_vertices(mesh_id, vertices)
                         
-                        # Get the exchanged data id
+                        # Get the exchanged data name
                         data_name = "Data"
-                        data_id = interface.get_data_id(data_name, mesh_id)
                         
-                        precice_dt = interface.initialize()
+                        participant.initialize()
 
                         dt = 0.01
                         t = 0
 
-                        while interface.is_coupling_ongoing():
+                        while participant.is_coupling_ongoing():
                           dt = np.minimum(dt, precice_dt)
                           
                           print("Generating data")
                           u = 1 - 2 * numpy.random.rand(n)
                           
-                          interface.write_block_scalar_data(data_id, vertex_ids, u)
-                          precice_dt = interface.advance(dt)
-                          # interface.read_block_scalar_data(data_id, vertex_ids, u)
+                          participant.write_data(mesh_name, data_name, vertex_ids, u)
+                          precice_dt = participant.advance(dt)
+                          # u[:, -1] = participant.read_data(mesh_name, data_name, vertex_ids, dt)
                           
                           t = t + dt 
                         
-                        interface.finalize()
+                        participant.finalize()
                     </code></pre>
                 </section>
                 </section>
@@ -718,11 +707,11 @@
                 <section>It should work now!</small></section>
                 <section>
                   <p><a href="https://github.com/MakisH/ofw18-training/blob/master/videos/generator-propagator-uncoupled.mp4"><video
-                        data-autoplay src="videos/generator-propagator-coupled.mp4"></video></a></p>
+                        data-autoplay src="videos/generator-propagator-coupled-new.webm"></video></a></p>
                 </section>
                 <section>
                     <h2>Data is being transfered!</h2>
-                    <p><a href="https://github.com/MakisH/ofw18-training/blob/master/videos/propagator_coupled.webm"><video data-autoplay src="videos/propagator_coupled.webm"></video></a></p>
+                    <p><img src="images/toy_simulation/final.png" style="max-height:400px;"></img></p>
                     <small>Most basic case: uni-directional, serial-explicit, nearest-neighbor mapping, ...</small>
                 </section>
                 
@@ -741,7 +730,7 @@
                     </section>
                 </section>
                 
-                <!-- OpenFOAM + CalculiX -->
+                <!-- OpenFOAM + dealii -->
                 <section data-markdown="sections/level3.md" data-separator-vertical="vvv"></section>
                 
                 <section>
@@ -817,21 +806,29 @@
                 </section>
                 
                 <section>
-                <h2>Configure the CalculiX adapter</h2>
+                <h2>Configure the dealii adapter</h2>
                 <div class="col">
                 <pre><code class="language-yaml" data-trim data-line-numbers="">
-                // solid-calculix/config.yml
+                // solid-dealii/parameters.prm
                     
-                participants:
-
-                    Solid:
-                        interfaces:
-                        - nodes-mesh: Solid-Mesh
-                          patch: surface
-                          read-data: [Force]
-                          write-data: [Displacement]
-                          
-                precice-config-file: ../precice-config.xml
+                subsection precice configuration
+                # Cases: FSI3 or PF for perpendicular flap
+                set Scenario = PF
+                
+                # Name of the precice configuration file
+                set precice config-file = ../precice-config.xml
+                
+                # Name of the participant in the precice-config.xml file
+                set Participant name = Solid
+                
+                # Name of the coupling mesh in the precice-config.xml file
+                set Mesh name = Solid-Mesh
+                
+                # Name of the read data in the precice-config.xml file
+                set Read data name = Force
+                
+                # Name of the write data in the precice-config.xml file
+                set Write data name = Displacement
                 </code></pre>
                 </div>
                 </section>
@@ -844,57 +841,54 @@
                 <section>
                   <h2>Configure preCICE</h2>
                   <div class="col">
-                    <pre><code class="language-xml" data-trim data-line-numbers="2-3|5-13|15-31|15,19-20,31|15,21-25,31|40|42-48">
-                      &lt;solver-interface dimensions="2"&gt;
-                        &lt;data:vector name="Force" /&gt;
-                        &lt;data:vector name="Displacement" /&gt;
+                    <pre><code class="language-xml" data-trim data-line-numbers="1-2|4-12|14-30|14,18-19,30|14,20-24,30|39|41-47">
+                      &lt;data:vector name="Force" /&gt;
+                      &lt;data:vector name="Displacement" /&gt;
 
-                        &lt;mesh name="Fluid-Mesh"&gt;
-                          &lt;use-data name="Force" /&gt;
-                          &lt;use-data name="Displacement" /&gt;
-                        &lt;/mesh&gt;
+                      &lt;mesh name="Fluid-Mesh" dimensions="2"&gt;
+                        &lt;use-data name="Force" /&gt;
+                        &lt;use-data name="Displacement" /&gt;
+                      &lt;/mesh&gt;
 
-                        &lt;mesh name="Solid-Mesh"&gt;
-                          &lt;use-data name="Displacement" /&gt;
-                          &lt;use-data name="Force" /&gt;
-                        &lt;/mesh&gt;
+                      &lt;mesh name="Solid-Mesh" dimensions="2"&gt;
+                        &lt;use-data name="Displacement" /&gt;
+                        &lt;use-data name="Force" /&gt;
+                      &lt;/mesh&gt;
 
-                        &lt;participant name="Fluid"&gt;
-                          &lt;export:vtk directory="results" /&gt;
-                          &lt;use-mesh name="Fluid-Mesh" provide="yes" /&gt;
-                          &lt;use-mesh name="Solid-Mesh" from="Solid" /&gt;
-                          &lt;write-data name="Force" mesh="Fluid-Mesh" /&gt;
-                          &lt;read-data name="Displacement" mesh="Fluid-Mesh" /&gt;
-                          &lt;mapping:rbf-thin-plate-splines
-                            direction="write"
-                            from="Fluid-Mesh"
-                            to="Solid-Mesh"
-                            constraint="conservative" /&gt;
-                          &lt;mapping:rbf-thin-plate-splines
-                            direction="read"
-                            from="Solid-Mesh"
-                            to="Fluid-Mesh"
-                            constraint="consistent" /&gt;
-                        &lt;/participant&gt;
+                      &lt;participant name="Fluid"&gt;
+                        &lt;export:vtk directory="results" /&gt;
+                        &lt;provide-mesh name="Fluid-Mesh" /&gt;
+                        &lt;receive-mesh name="Solid-Mesh" from="Solid" /&gt;
+                        &lt;write-data name="Force" mesh="Fluid-Mesh" /&gt;
+                        &lt;read-data name="Displacement" mesh="Fluid-Mesh" /&gt;
+                        &lt;mapping:rbf-thin-plate-splines
+                          direction="write"
+                          from="Fluid-Mesh"
+                          to="Solid-Mesh"
+                          constraint="conservative" /&gt;
+                        &lt;mapping:rbf-thin-plate-splines
+                          direction="read"
+                          from="Solid-Mesh"
+                          to="Fluid-Mesh"
+                          constraint="consistent" /&gt;
+                      &lt;/participant&gt;
 
-                        &lt;participant name="Solid"&gt;
-                          &lt;use-mesh name="Solid-Mesh" provide="yes" /&gt;
-                          &lt;write-data name="Displacement" mesh="Solid-Mesh" /&gt;
-                          &lt;read-data name="Force" mesh="Solid-Mesh" /&gt;
-                          &lt;watch-point mesh="Solid-Mesh" name="Flap-Tip" coordinate="0.0;1" /&gt;
-                        &lt;/participant&gt;
+                      &lt;participant name="Solid"&gt;
+                        &lt;provide-mesh name="Solid-Mesh" /&gt;
+                        &lt;receive-data name="Displacement" mesh="Solid-Mesh" /&gt;
+                        &lt;read-data name="Force" mesh="Solid-Mesh" /&gt;
+                        &lt;watch-point mesh="Solid-Mesh" name="Flap-Tip" coordinate="0.0;1" /&gt;
+                      &lt;/participant&gt;
 
-                        &lt;m2n:sockets from="Fluid" to="Solid" exchange-directory=".." /&gt;
+                      &lt;m2n:sockets acceptor="Fluid" connector="Solid" exchange-directory=".." /&gt;
 
-                        &lt;coupling-scheme:serial-explicit&gt;
-                          &lt;participants first="Fluid" second="Solid" /&gt;
-                          &lt;max-time value="1.5" /&gt;
-                          &lt;time-window-size value="0.01" /&gt;
-                          &lt;exchange data="Force" mesh="Solid-Mesh" from="Fluid" to="Solid" /&gt;
-                          &lt;exchange data="Displacement" mesh="Solid-Mesh" from="Solid" to="Fluid" /&gt;
-                        &lt;/coupling-scheme:serial-explicit&gt;
-
-                      &lt;/solver-interface&gt;
+                      &lt;coupling-scheme:serial-explicit&gt;
+                        &lt;participants first="Fluid" second="Solid" /&gt;
+                        &lt;max-time value="1.5" /&gt;
+                        &lt;time-window-size value="0.01" /&gt;
+                        &lt;exchange data="Force" mesh="Solid-Mesh" from="Fluid" to="Solid" /&gt;
+                        &lt;exchange data="Displacement" mesh="Solid-Mesh" from="Solid" to="Fluid" /&gt;
+                      &lt;/coupling-scheme:serial-explicit&gt;
                     </code></pre>
                   </div>
                   <small>Notice the serial-explicit coupling scheme</small>
@@ -903,16 +897,17 @@
                 
                 <section>
                 <section>
+                  <p><a href="https://github.com/MakisH/ofw18-training/blob/master/videos/execution-serial-explicit.mp4"><video
+                        data-autoplay src="videos/execution-serial-explicit.mp4" style="max-height:800px;"></video></a></p>
+                </section>
+                <section>
+                  <p><a href="https://github.com/MakisH/ofw18-training/blob/master/videos/video-explicit.ogv"><img
+                        src="images/level3/screenshot-explicit.png" style="max-height:800px;"></img></a></p>
+                </section>
+                <section>
+                  <small>When we decrease the solid density further to 1, the participants have stronger coupling, then:</small>
                     <p><a href="https://github.com/MakisH/ofw18-training/blob/master/videos/execution-serial-explicit.mp4"><video
-                          data-autoplay src="videos/execution-serial-explicit.mp4" style="max-height:800px;"></video></a></p>
-                </section>
-                <section>
-                    <p><a href="https://github.com/MakisH/ofw18-training/blob/master/videos/video-explicit.ogv"><video
-                          data-autoplay src="videos/video-explicit.ogv" style="max-height:800px;"></video></a></p>
-                </section>
-                <section>
-                    <p><a href="https://github.com/MakisH/ofw18-training/blob/master/videos/video-explicit.ogv"><img
-                          src="images/level3/screenshot-explicit.png" style="max-height:800px;"></img></a></p>
+                          data-autoplay src="videos/se-ex.webm" style="max-height:800px;"></video></a></p>
                 </section>
                 <section>
                   <h2>What we did so far: serial-explicit scheme</h2>
@@ -926,7 +921,38 @@
                 <section>
                   <h2>Configure the coupling scheme</h2>
                   <div class="col">
-                    <pre><code class="language-xml" data-trim data-trim data-line-numbers="1,13|2|3-4|5-6|7-9|10-12">
+                    <pre><code class="language-xml" data-trim data-trim data-line-numbers="1,10|2|3-4|5-6|7-9">
+                        &lt;coupling-scheme:serial-implicit&gt;
+                          &lt;participants first="Fluid" second="Solid" /&gt;
+                          &lt;max-time value="1.5" /&gt;
+                          &lt;time-window-size value="0.01" /&gt;
+                          &lt;exchange data="Force" mesh="Solid-Mesh" from="Fluid" to="Solid" /&gt;
+                          &lt;exchange data="Displacement" mesh="Solid-Mesh" from="Solid" to="Fluid" /&gt;
+                          &lt;relative-convergence-measure limit="5e-3" data="Displacement" mesh="Solid-Mesh" /&gt;
+                          &lt;relative-convergence-measure limit="5e-3" data="Force" mesh="Solid-Mesh" /&gt;
+                          &lt;max-iterations value="50" /&gt;
+                        &lt;/coupling-scheme:serial-implicit&gt;
+                    </code></pre>
+                  </div>
+                  <small>Only change from explicit to implicit coupling</small>
+                </section>
+                <section>
+                  <small>With solid density equal to 42:</small>
+                  <p><a href="https://github.com/MakisH/ofw18-training/blob/master/videos/execution-serial-explicit.mp4"><video
+                        data-autoplay src="videos/se-im-42.webm" style="max-height:800px;"></video></a></p>
+                  <small>Average iteration number per time step: 3.41</small>
+                </section>
+                <section>
+                  With solid density equal to 1:      
+                  break again!
+                </section>
+                <section>
+                  <h2>Still not enough stability for strong coupling!</h2>
+                </section>
+                <section>
+                  <h2>Configure the coupling scheme</h2>
+                  <div class="col">
+                    <pre><code class="language-xml" data-trim data-trim data-line-numbers="10-12">
                         &lt;coupling-scheme:serial-implicit&gt;
                           &lt;participants first="Fluid" second="Solid" /&gt;
                           &lt;max-time value="1.5" /&gt;
@@ -942,15 +968,13 @@
                         &lt;/coupling-scheme:serial-implicit&gt;
                     </code></pre>
                   </div>
-                  <small>Simplest case: constant under-relaxation</small>
+                  <small>Simplest acceleration: constant under-relaxation</small>
                 </section>
                 <section>
-                    <p><a href="https://github.com/MakisH/ofw18-training/blob/master/videos/video-implicit.ogv"><video
-                          data-autoplay src="videos/video-implicit.ogv" style="max-height:800px;"></video></a></p>
-                </section>
-                <section>
-                    <p><a href="https://github.com/MakisH/ofw18-training/blob/master/videos/video-implicit.ogv"><img
-                          src="images/level3/screenshot-implicit.png" style="max-height:800px;"></img></a></p>
+                  <small>With solid density equal to 1:</small>
+                  <p><a href="https://github.com/MakisH/ofw18-training/blob/master/videos/execution-serial-explicit.mp4"><video
+                        data-autoplay src="videos/se-im-const-1.webm" style="max-height:800px;"></video></a></p>
+                  <small>Average iteration number per time step: 5.27</small>
                 </section>
            
                 <section>
@@ -967,8 +991,6 @@
                         &lt;/acceleration:aitken&gt;
                     </code></pre>
                   </div>
-                  <small>Average iterations drop from 3.85 (constant) to 3.49 (Aitken)<br/>
-                  Note: This simulation is reaching a steady-state, thus differences diffuse</small>
                 </section>
 
                 <section>
@@ -985,7 +1007,6 @@
                       &lt;/acceleration:IQN-ILS>
                     </code></pre>
                   </div>
-                  <small>Average iterations drop from 3.49 (Aitken) to 2.91 (IQN)</small>
                 </section>
 
                 <section>
@@ -1019,7 +1040,47 @@
                     &lt;/coupling-scheme:parallel-implicit&gt;
                     </code></pre>
                   </div>
-                  <small>Average iterations drop from 2.91 (serial-implicit IQN) to 2.37 (parallel-implicit IQN)</small>
+                </section>
+                <section>
+
+                  <table>
+                    <tr>
+                      <th></th>
+                      <th>density = 42</th>
+                      <th>density = 1</th>
+                    </tr>
+                    <tr>
+                      <td>serial-explicit</td>
+                      <td>div</td>
+                      <td>div</td>
+                    </tr>
+                    <tr>
+                      <td>se-implicit</td>
+                      <td>3.41</td>
+                      <td>div</td>
+                    </tr>
+                    <tr>
+                      <td>se-im-const</td>
+                      <td>4.48</td>
+                      <td>5.27</td>
+                    </tr>
+                    <tr>
+                      <td>se-im-Aitken</td>
+                      <td>3.74</td>
+                      <td>5.3</td>
+                    </tr>
+                    <tr> 
+                      <td>se-im-ILS</td>
+                      <td>2.95</td>
+                      <td>3.07</td>
+                    </tr>
+                    <tr>
+                      <td>parallel-im-ILS</td>
+                      <td>2.46</td>
+                      <td>2.33</td>
+                    </tr>
+                  </table>
+
                 </section>
 
                 <section>
@@ -1030,13 +1091,13 @@
 
                 <section>
                   <h2>Rigorous comparison from the literature</h2>
-                  <img src="images/level3/rigorous-comparison-aitken-iqn.png" style="max-height:600px;"/>
+                  <img src="images/level3/rigorous-comparison-aitken-iqn.png" style="max-height:600px;" />
                   <small>Source: Dissertation of Benjamin Uekermann (2016)</small>
                 </section>
 
                 <section>
                   <h2>Rigorous comparison from the literature</h2>
-                  <img src="images/level3/rigorous-comparison-serial-parallel.png" style="max-height:600px;"/>
+                  <img src="images/level3/rigorous-comparison-serial-parallel.png" style="max-height:600px;" />
                   <small>Source: Dissertation of Benjamin Uekermann (2016)</small>
                 </section>
                 </section>

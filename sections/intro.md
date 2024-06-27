@@ -30,13 +30,15 @@ vvv
 
 ## Where preCICE helps
 
-![](images/intro/precice-features.png)
+![](images/intro/precice-features.png) 
 
 vvv
 
 ## What people do with preCICE (1)
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/U9RonmPw76g?rel=0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+<video data-autoplay width="560" height="315" >
+  <source src="videos/FSI coupling for an undulation membrane tidal energy converter.mp4" type="video/mp4">
+</video>
 
 Credit: Ulrich Heck, DHCAE Tools GmbH
 
@@ -44,7 +46,9 @@ vvv
 
 ## What people do with preCICE (2)
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/nGr_Rpc1Sx4?start=5" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+<video data-autoplay width="560" height="315">
+  <source src="videos/Particle impacts on flat plate with deformation (DEM+FEM).mp4" type="video/mp4">
+</video>
 
 Credit: Prasad Adhav, Univ. of Luxembourg
 
@@ -52,7 +56,9 @@ vvv
 
 ## What people do with preCICE (3)
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/NRMJF2mFXbc?rel=0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+<video data-autoplay width="560" height="315">
+  <source src="videos/FSI coupling using OpenFOAM and preCICE for a free surface flow.mp4" type="video/mp4">
+</video>
 
 Credit: Utkan Caliskan
 
@@ -61,15 +67,15 @@ vvv
 ## In this talk
 
 - **The preCICE library:** Couple two toy Python solvers
-- **The preCICE ecosystem:** Couple OpenFOAM + CalculiX
+- **The preCICE ecosystem:** Couple OpenFOAM + deal.II
 
 vvv
 
 ## Get the slides
 
-<img src="images/closing/QRCode.png" style="max-height:700px;"/>
+<img src="images/closing/QRCode.png" style="max-height:450px;"/>
 
-<a href="http://go.tum.de/530822">go.tum.de/530822</a>
+<a href="https://github.com/MakisH/ofw19-training">github.com/MakisH/ofw19-training</a>
 
 vvv
 
@@ -77,7 +83,6 @@ vvv
 
 1. You are not expected to try things live.
 2. Ask questions live, feel free to interrupt me.
-3. Some Live USB sticks available during the workshop
-4. Find all software installed in a demo virtual machine:<br/>
+3. Find all software installed in a demo virtual machine:<br/>
 <a href="https://precice.org/installation-vm.html">precice.org/installation-vm.html</a>
-5. Everything presented here is free software. preCICE and all the adapters are developed publicly on GitHub: <a href="https://github.com/precice/">github.com/precice</a>
+4. Everything presented here is free software. preCICE and all the adapters are developed publicly on GitHub: <a href="https://github.com/precice/">github.com/precice</a>
